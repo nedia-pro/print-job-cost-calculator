@@ -1,20 +1,20 @@
 import pandas as pd
 
-# 🔹 إدخال تفاعلي
-orders_file = input("📥 أدخل اسم ملف الطلبات (مثلاً orders.csv): ").strip()
-output_file = input("📤 أدخل اسم ملف الإخراج (مثلاً final_quote.xlsx): ").strip()
+# 🔹 Interactive Input
+orders_file = input("📥 Enter the order file name (e.g. orders.csv): ").strip()
+output_file = input("📤 Enter the output file name (e.g. final_quote.xlsx): ").strip()
 
-# 📄 قراءة الملفات
+# 📄 Read Files
 try:
     orders = pd.read_csv(orders_file)
     paper_prices = pd.read_csv("paper_prices.csv")
     printing_costs = pd.read_csv("printing_costs.csv")
     delivery_costs = pd.read_csv("delivery_costs.csv")
 except FileNotFoundError as e:
-    print(f"❌ خطأ: الملف غير موجود - {e}")
+    print(f"❌ Error: File not found - {e}")
     exit()
 
-# 📦 حساب التكلفة
+# 📦 Cost Calculation
 def calculate_cost(row):
     try:
         paper = paper_prices[paper_prices["PaperType"] == row["PaperType"]].iloc[0]
@@ -37,17 +37,17 @@ def calculate_cost(row):
         total = paper_cost + printing_cost + delivery_cost
         return pd.Series([paper_cost, printing_cost, delivery_cost, total])
     except Exception as e:
-        print(f"⚠️ خطأ في حساب SKU {row['SKU']}: {e}")
+        print(f"⚠️ Error calculating SKU {row['SKU']}: {e}")
         return pd.Series([0, 0, 0, 0])
 
-# 🧠 تطبيق الحسابات
+# 🧠 Apply calculations
 orders[["PaperCost", "PrintingCost", "DeliveryCost", "TotalCost"]] = orders.apply(calculate_cost, axis=1)
 
-# 💾 إخراج النتائج
+# 💾 Output results
 orders.to_excel(output_file, index=False)
 
-# 📊 ملخص
-print("✅ تم إنشاء الملف بنجاح!")
-print(f"📁 الملف: {output_file}")
-print(f"🧾 عدد الطلبات: {len(orders)}")
-print(f"💰 مجموع التكاليف: {orders['TotalCost'].sum():.2f} دينار/€/$ (حسب العملة)")
+# 📊 Summary
+print("✅ File created successfully!")
+print(f"📁 File: {output_file}")
+print(f"🧾 Number of orders: {len(orders)}")
+print(f"💰 Total cost: {orders['TotalCost'].sum():.2f} (Currency depending on the data)")
