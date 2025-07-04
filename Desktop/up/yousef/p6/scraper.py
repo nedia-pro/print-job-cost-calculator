@@ -5,7 +5,6 @@ import csv
 base_url = "http://books.toscrape.com/catalogue/page-{}.html"
 all_books = []
 
-# نعملو حلقة على الصفحات الأولى مثلاً (5 صفحات)
 for page in range(1, 6):
     url = base_url.format(page)
     response = requests.get(url)
@@ -20,10 +19,9 @@ for page in range(1, 6):
 
         all_books.append([title, price, link])
 
-# نكتب البيانات في ملف CSV
 with open("books.csv", "w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file)
     writer.writerow(["Title", "Price", "Link"])
     writer.writerows(all_books)
 
-print("✅ تم حفظ البيانات في ملف books.csv")
+print("✅ file books.csv created")
